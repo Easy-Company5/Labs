@@ -26,12 +26,56 @@ if(CrossCompiling)
     
     # Initialise the Raspberry Pi Pico SDK
     pico_sdk_init()
+    # You could also use ARM_ALL_FAST_TABLES if you need all fast tables
+
+    # Set up CMSIS-DSP
+    set(CMSISCORE "${CMAKE_CURRENT_LIST_DIR}/lib/CMSIS_5/CMSIS/Core")
+    # set options for which parts of CMSIS-DSP are to be included
+    set(BASICMATH ON)
+    set(COMPLEXMATH ON)
+    set(CONTROLLER OFF)
+    set(FASTMATH ON)
+    set(FILTERING OFF)
+    set(MATRIX OFF)
+    set(STATISTICS OFF)
+    set(SUPPORT OFF)
+    set(TRANSFORM ON)
+    set(SVM OFF)
+    set(BAYES OFF)
+    set(DISTANCE OFF)
+    set(INTERPOLATION OFF)
+    set(QUATERNIONMATH OFF)
+    set(CONFIGTABLE ON)
+    set(RFFT_Q15_1024 ON) # which FFT constants are hard-coded into the app
+    add_subdirectory(lib/CMSIS-DSP/Source bin_dsp)
 
     add_executable(labs)
     target_sources(labs 
+    ## REFERENCE THE FILE YOU WANNA BUILD
         PUBLIC
         src/main.cpp
-        src/drivers/logging/logging.cpp
+        src/drivers/LabsRev2/logging/logging.cpp
+        # src/drivers/LABS/LED.cpp
+        # src/drivers/LABS/Misc.cpp
+        # src/drivers/LABS/microphone.cpp
+        # src/drivers/LABS/Switch.cpp
+        # src/drivers/LABS/Init.cpp
+        # src/drivers/LABS/Assignment/UartTransmit.cpp
+        # src/drivers/LABS/Assignment/LIS3DHS.cpp
+        # src/drivers/LABS/Assignment/HCSR04.cpp
+        # src/drivers/LABS/Assignment/A4988.cpp
+        # src/drivers/LABS/Assignment/LEDs.cpp
+        # src/drivers/LABS/LIS3DH.cpp
+        # src/drivers/LABS/microphone.cpp
+        src/drivers/LabsRev2/Lab7/Lab7.cpp
+        src/drivers/LabsRev2/Lab10/microphone.cpp
+        # src/drivers/LABS/SwitchRev2.cpp
+        src/drivers/LabsRev2/WS2812/WS2812.cpp
+        src/drivers/LabsRev2/Lab9/LIS3DH.cpp
+        src/drivers/LabsRev2/Lab9/Lab9.cpp
+        src/drivers/LabsRev2/Lab10/Lab10.cpp
+        src/drivers/LabsRev2/Init.cpp
+
     )
     target_include_directories(labs
         PUBLIC 
@@ -60,6 +104,9 @@ if(CrossCompiling)
         hardware_watchdog
         hardware_clocks
         hardware_pwm
+        hardware_adc
+        CMSISDSP
+        pico_rand
     )
 
     pico_add_extra_outputs(labs)
@@ -74,14 +121,38 @@ else()
 
     add_executable(labs)
     target_sources(labs 
+    ## REFERENCE THE FILE YOU WANNA BUILD
         PUBLIC
         src/main.cpp
-        src/drivers/logging/logging.cpp
-        tests/mocks/pico/stdlib.cpp
-        tests/mocks/pico/time.cpp
-        tests/mocks/hardware/gpio.cpp
-        tests/mocks/hardware/pio.cpp
-        tests/mocks/ws2812.cpp
+        src/drivers/LabsRev2/logging/logging.cpp
+        # src/drivers/LABS/LED.cpp
+        # src/drivers/LABS/Misc.cpp
+        # tests/mocks/pico/stdlib.cpp
+        # tests/mocks/pico/time.cpp
+        # tests/mocks/hardware/gpio.cpp
+        # tests/mocks/hardware/pio.cpp
+        # tests/mocks/ws2812.cpp
+        # src/drivers/LABS/microphone.cpp
+        # src/drivers/LABS/Switch.cpp
+        # src/drivers/LABS/Init.cpp
+        # src/drivers/LABS/Assignment/UartTransmit.cpp
+        # src/drivers/LABS/Assignment/UartTransmit.cpp
+        # src/drivers/LABS/Assignment/LIS3DHS.cpp
+        # src/drivers/LABS/Assignment/HCSR04.cpp
+        # src/drivers/LABS/Assignment/A4988.cpp
+        # src/drivers/LABS/Assignment/LEDs.cpp
+        # src/drivers/LABS/LIS3DH.cpp
+        # src/drivers/LABS/microphone.cpp
+        src/drivers/LabsRev2/Lab7/Lab7.cpp
+        src/drivers/LabsRev20/Lab10/microphone.cpp
+        # src/drivers/LABS/SwitchRev2.cpp
+        src/drivers/LabsRev2/WS2812/WS2812.cpp
+        src/drivers/LabsRev2/Lab9/LIS3DH.cpp
+        src/drivers/LabsRev2/Lab9/Lab9.cpp
+        src/drivers/LabsRev2/Lab10/Lab10.cpp
+
+        src/drivers/LabsRev2/Init.cpp
+
     )
     target_include_directories(labs
         PUBLIC 

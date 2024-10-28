@@ -1,38 +1,85 @@
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/pio.h"
+#include "drivers/LabsRev2/Libraries.h"
 
-#include "WS2812.pio.h" // This header file gets produced during compilation from the WS2812.pio file
-#include "drivers/logging/logging.h"
 
-#define LED_PIN 14
+using namespace std;
 
-int main()
+volatile int current_task{2}; // Global variable to track the current task
+
+// Flag to track first entry into each task
+bool first_entry{true}; // Will be reset when switching cases
+
+// ISR for button press to switch between cases
+void gpio_callback(uint gpio, uint32_t events);
+
+void Level(Accelerometer accel, LedArray led, uint32_t x_level_colour, uint32_t y_level_colour);
+
+void LightLED(LedArray led, uint32_t led_colour);
+
+void audio_visualiser(Microphone microphone, LedArray led);
+
+void gpio_callback(uint gpio, uint32_t events)
 {
-    stdio_init_all();
+    if (gpio == SW1)
+    {
+        current_task = (current_task + 1) % NUMBER_OF_TASKS;
+        first_entry = true; // Set first_entry to true when switching to a new task
+    }
+}
 
-    // Initialise PIO0 to control the LED chain
-    uint pio_program_offset = pio_add_program(pio0, &ws2812_program);
-    ws2812_program_init(pio0, 0, pio_program_offset, LED_PIN, 800000, false);
-    uint32_t led_data [1];
+int main() {
+    Initialise();
+    uint8_t current_state{1};
+// Infinite loop to handle case switching based on the switch state
+    Accelerometer accel;
+    LedArray led(NUM_LEDS);
+    Microphone microphone;
 
-    for (;;) {
-        // Test the log system
-        log(LogLevel::INFORMATION, "Hello world");
 
-        // Turn on the first LED to be a certain colour
-        uint8_t red = 0;
-        uint8_t green = 0;
-        uint8_t blue = 255;
-        led_data[0] = (red << 24) | (green << 16) | (blue << 8);
-        pio_sm_put_blocking(pio0, 0, led_data[0]);
-        sleep_ms(500);
+    microphone.init();
+    const uint32_t YLevelColour{LED_GREEN};
+    const uint32_t XLevelColour{LED_PINK};
 
-        // Set the first LED off 
-        led_data[0] = 0;
-        pio_sm_put_blocking(pio0, 0, led_data[0]);
-        sleep_ms(500);
+    // Set up an interrupt on the SWITCH_PIN for a falling edge (button press)
+    gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+
+    while (true) {
+        switch (current_task)
+        {
+            case 0: //Lab 7 LED
+            {
+                LightLED(led, LED_GREEN);
+            }
+
+            case 1: //Lab 8 LIS3DH
+            {
+                Level(accel, led, XLevelColour, YLevelColour);
+            }
+
+            case 2: //Lab 9 Microphone
+            {
+                audio_visualiser(microphone, led);
+            }
+            
+            case 4: //Reset Flags
+            {
+                first_entry = true;
+                std::cout << "Entry flag reset." << std::endl;
+                break;
+            }
+
+            default:
+            {
+                if (first_entry)
+                {
+                    sleep_ms(500);
+                    first_entry = false;
+                }
+                std::cout << "Invalid task." << std::endl;
+                break;
+            }
+            
+
+        }
     }
 
     return 0;
