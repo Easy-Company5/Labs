@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <vector>
-#include <array>
-#include <cmath>
-#include <iostream>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/pio.h"
-#include "hardware/adc.h"
-#include "drivers/LabsRev2/logging/logging.h"
-#include "microphone.h"
-#include "drivers/LabsRev2/GPIOPins.h"
-#include "arm_math.h"
+#include "drivers/LabsRev2/Libraries.h"
 
 Microphone::Microphone()
 {

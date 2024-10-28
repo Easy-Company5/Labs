@@ -1,3 +1,5 @@
+#pragma once
+
 #define LED_PIN 14
 #define NUM_LEDS 12
 #define SDA_PIN 16  // SDA pin for I2C communication

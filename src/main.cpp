@@ -8,15 +8,6 @@ volatile int current_task{2}; // Global variable to track the current task
 // Flag to track first entry into each task
 bool first_entry{true}; // Will be reset when switching cases
 
-// ISR for button press to switch between cases
-void gpio_callback(uint gpio, uint32_t events);
-
-void Level(Accelerometer accel, LedArray led, uint32_t x_level_colour, uint32_t y_level_colour);
-
-void LightLED(LedArray led, uint32_t led_colour);
-
-void audio_visualiser(Microphone microphone, LedArray led);
-
 void gpio_callback(uint gpio, uint32_t events)
 {
     if (gpio == SW1)

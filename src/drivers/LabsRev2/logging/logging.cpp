@@ -1,9 +1,6 @@
 // Logging system, using the style that state is global in the C file.
 
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
-#include "logging.h"
+#include "drivers/LabsRev2/Libraries.h"
 
 // --- Device driver internal state:
 

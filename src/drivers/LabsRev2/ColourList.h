@@ -1,3 +1,5 @@
+#pragma once
+
 #define LED_RED 0xFF000000        // Bright Red
 #define LED_GREEN 0x00FF0000      // Bright Green
 #define LED_BLUE 0x0000FF00       // Bright Blue

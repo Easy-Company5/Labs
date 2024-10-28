@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <iostream>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/pio.h"
-#include "hardware/i2c.h"
-#include "drivers/LabsRev2/logging/logging.h"
-#include "drivers/LabsRev2/GPIOPins.h"
-#include "LIS3DH.h"
+#include "drivers/LabsRev2/Libraries.h"
+
 
 const uint I2cSpeed{400'000};
 const uint8_t ControlRegister1Address{0x20};
